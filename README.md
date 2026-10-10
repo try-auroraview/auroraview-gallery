@@ -40,6 +40,14 @@ For frontend iteration with hot reload, run `npm run dev` in one shell and
 `python main.py` in another; the host loads `dist/` and Vite serves the dev
 server independently.
 
+## Platform support
+
+The Python host runs on **Windows and macOS only**. AuroraView publishes
+`win_amd64` and `macosx` wheels to PyPI and has never shipped a manylinux build,
+so `pip install -r requirements.txt` has nothing to resolve on Linux. The
+frontend builds anywhere; CI builds it on Linux and runs the Python host job on
+Windows.
+
 ## Relationship to the framework
 
 Gallery depends on AuroraView through published packages only:

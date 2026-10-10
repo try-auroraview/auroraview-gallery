@@ -44,8 +44,13 @@ jobs:
 
   python:
     name: Python host
-    runs-on: ubuntu-latest
+    # auroraview publishes win_amd64 and macosx wheels only - there is no
+    # manylinux build - so the host cannot be installed on a Linux runner.
+    runs-on: windows-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 

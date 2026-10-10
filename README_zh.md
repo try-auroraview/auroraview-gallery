@@ -37,6 +37,13 @@ python main.py
 前端迭代需要热更新时，可在一个终端跑 `npm run dev`，另一个跑 `python main.py`；
 宿主加载 `dist/`，Vite 独立提供开发服务器。
 
+## 平台支持
+
+Python 宿主**仅支持 Windows 与 macOS**。AuroraView 只向 PyPI 发布了 `win_amd64`
+和 `macosx` wheel，从未提供 manylinux 构建，因此在 Linux 上
+`pip install -r requirements.txt` 无可用版本。前端可在任意平台构建；
+CI 在 Linux 上构建前端，Python 宿主作业跑在 Windows 上。
+
 ## 与框架的关系
 
 Gallery 只通过已发布的包依赖 AuroraView：
