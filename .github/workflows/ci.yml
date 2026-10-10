@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-dist
+          path: dist/
+          retention-days: 7
+
+  python:
+    name: Python host
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install host requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt ruff
+
+      - name: Ruff
+        run: |
+          ruff check main.py backend/ scripts/
+          ruff format --check main.py backend/ scripts/
+
+      # Proves the host imports and discovers samples against the published
+      # auroraview wheel, with the optional auroraview-ai extra absent.
+      - name: Backend smoke test
+        run: |
+          python -c "import sys; sys.path.insert(0, '.'); import backend; n = len(backend.get_samples_list()); print('samples discovered:', n); assert n > 0, 'no samples discovered'"

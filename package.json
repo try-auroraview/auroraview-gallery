@@ -3,14 +3,21 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/try-auroraview/auroraview-gallery",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/try-auroraview/auroraview-gallery.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@auroraview/sdk": "file:../packages/auroraview-sdk",
+    "@auroraview/sdk": "^0.5.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gsap": "^3.14.2",

@@ -14,14 +14,16 @@ import logging
 import os
 import sys
 import threading
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
 
-# Add auroraview-ai package to path
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-PACKAGES_DIR = PROJECT_ROOT / "packages"
-if str(PACKAGES_DIR / "auroraview-ai" / "src") not in sys.path:
-    sys.path.insert(0, str(PACKAGES_DIR / "auroraview-ai" / "src"))
+# `auroraview-ai` is an optional extra that is not published to PyPI yet. Point
+# AURORAVIEW_AI_SRC at a local checkout to enable the AI Agent sidebar, e.g.
+#   AURORAVIEW_AI_SRC=/path/to/auroraview/packages/auroraview-ai/src
+# When it is unset this import fails, and both backend/__init__.py and main.py
+# degrade gracefully to a disabled AI panel.
+_ai_src = os.environ.get("AURORAVIEW_AI_SRC")
+if _ai_src and _ai_src not in sys.path:
+    sys.path.insert(0, _ai_src)
 
 from auroraview_ai import (  # noqa: E402
     AVAILABLE_MODELS,

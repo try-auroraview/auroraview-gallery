@@ -1,0 +1,24 @@
+# AuroraView Gallery - Python host requirements.
+#
+# Gallery talks to the framework through the published PyPI package, not through
+# an in-tree checkout of try-auroraview/auroraview.
+
+auroraview==0.5.11
+
+# backend/dependency_installer.py compares installed versions against the
+# `Requirements:` block declared in each example's docstring.
+packaging>=23.0
+
+# ---------------------------------------------------------------------------
+# Optional
+# ---------------------------------------------------------------------------
+# Examples launched from Gallery may declare extra requirements; the Dependency
+# modal installs those on demand. Install this up front if you run the CDP /
+# browser-automation examples:
+#   httpx>=0.28
+#
+# The AI Agent sidebar needs `auroraview-ai`, which is not published to PyPI
+# yet. Point AURORAVIEW_AI_SRC at a local framework checkout and install the
+# agent extra:
+#   export AURORAVIEW_AI_SRC=/path/to/auroraview/packages/auroraview-ai/src
+#   pip install "pydantic-ai-slim[openai,anthropic,google]"

@@ -47,11 +47,11 @@ def _get_data_dir() -> Path:
     global _data_dir
     if _data_dir is None:
         # Use user's app data directory or local data
-        if os.name == 'nt':
-            base = Path(os.environ.get('LOCALAPPDATA', '~'))
+        if os.name == "nt":
+            base = Path(os.environ.get("LOCALAPPDATA", "~"))
         else:
-            base = Path.home() / '.local' / 'share'
-        _data_dir = base.expanduser() / 'auroraview' / 'gallery'
+            base = Path.home() / ".local" / "share"
+        _data_dir = base.expanduser() / "auroraview" / "gallery"
         _data_dir.mkdir(parents=True, exist_ok=True)
     return _data_dir
 
@@ -100,6 +100,7 @@ def get_notification_manager() -> NotificationManager:
 # Bookmarks API
 # ============================================================================
 
+
 def get_bookmarks() -> dict[str, Any]:
     """Get all bookmarks."""
     manager = get_bookmark_manager()
@@ -129,8 +130,12 @@ def remove_bookmark(bookmark_id: str) -> dict[str, Any]:
     return {"ok": success}
 
 
-def update_bookmark(bookmark_id: str, title: Optional[str] = None,
-                   url: Optional[str] = None, folder_id: Optional[str] = None) -> dict[str, Any]:
+def update_bookmark(
+    bookmark_id: str,
+    title: Optional[str] = None,
+    url: Optional[str] = None,
+    folder_id: Optional[str] = None,
+) -> dict[str, Any]:
     """Update a bookmark."""
     manager = get_bookmark_manager()
     bookmark = manager.get(bookmark_id)  # Use correct method name
@@ -201,6 +206,7 @@ def _folder_to_dict(f: BookmarkFolder) -> dict[str, Any]:
 # History API
 # ============================================================================
 
+
 def get_history(limit: int = 100, offset: int = 0) -> dict[str, Any]:
     """Get browsing history."""
     manager = get_history_manager()
@@ -258,6 +264,7 @@ def _history_to_dict(e: HistoryEntry) -> dict[str, Any]:
 # ============================================================================
 # Downloads API
 # ============================================================================
+
 
 def get_downloads() -> dict[str, Any]:
     """Get all downloads."""
@@ -340,6 +347,7 @@ def _download_to_dict(d: DownloadItem) -> dict[str, Any]:
 # Settings API
 # ============================================================================
 
+
 def get_settings() -> dict[str, Any]:
     """Get all settings."""
     manager = get_settings_manager()
@@ -374,6 +382,7 @@ def reset_settings() -> dict[str, Any]:
 # ============================================================================
 # Notifications API
 # ============================================================================
+
 
 def show_notification(
     title: str,
@@ -429,6 +438,7 @@ def get_notifications() -> dict[str, Any]:
 # ============================================================================
 # Register APIs with WebView
 # ============================================================================
+
 
 def register_features_api(webview: "WebView") -> None:
     """Register all features APIs with a WebView instance."""

@@ -10,9 +10,8 @@ from pathlib import Path
 from auroraview import WebView
 from auroraview.utils.file_protocol import path_to_file_url
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
-sys.path.insert(0, str(PROJECT_ROOT / "python"))
 
 DIST_DIR = Path(__file__).parent / "dist"
 

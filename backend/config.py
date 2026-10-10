@@ -13,12 +13,16 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# Path setup - __file__ is correctly set by runpy.run_path() in packed mode
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-GALLERY_DIR = Path(__file__).parent.parent
-DIST_DIR = GALLERY_DIR / "dist"
+# Path setup - __file__ is correctly set by runpy.run_path() in packed mode.
+# This repository *is* the Gallery app, so app root and project root coincide:
+#   <repo>/backend/config.py -> <repo>
+PROJECT_ROOT = Path(__file__).parent.parent
+GALLERY_DIR = PROJECT_ROOT
+DIST_DIR = PROJECT_ROOT / "dist"
 
-# Determine examples directory
+# Determine examples directory.
+# The bundled `examples/` copy is the default; point AURORAVIEW_EXAMPLES_DIR at a
+# live `try-auroraview/auroraview` checkout to develop against upstream samples.
 # Priority: AURORAVIEW_EXAMPLES_DIR env > AURORAVIEW_RESOURCES_DIR/examples > project/examples
 _examples_env = os.environ.get("AURORAVIEW_EXAMPLES_DIR")
 _resources_env = os.environ.get("AURORAVIEW_RESOURCES_DIR")

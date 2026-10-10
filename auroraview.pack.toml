@@ -40,8 +40,8 @@ identifier = "com.auroraview.gallery"
 description = "Interactive showcase of all AuroraView features and components"
 authors = ["AuroraView Team"]
 license = "MIT"
-homepage = "https://github.com/try-auroraview/auroraview"
-repository = "https://github.com/try-auroraview/auroraview"
+homepage = "https://github.com/try-auroraview/auroraview-gallery"
+repository = "https://github.com/try-auroraview/auroraview-gallery"
 allow_new_window = true
 
 # ============================================================================
@@ -61,8 +61,12 @@ type = "python"                                 # "python" | "go" | "rust" | "no
 [backend.python]
 version = "3.11"
 entry_point = "main:run_gallery"
-packages = ["pyyaml", "pydantic-ai-slim[openai,anthropic,google]", "httpx"]
-include_paths = [".", "../python", "../packages/auroraview-ai/src"]
+# `auroraview` comes from PyPI: Gallery no longer reaches into the framework
+# monorepo for the in-tree `python/` bindings.
+# `auroraview-ai` is optional and unpublished. To bundle the AI panel, add its
+# `src` directory to include_paths and set AURORAVIEW_AI_SRC at runtime.
+packages = ["auroraview==0.5.11", "pyyaml", "pydantic-ai-slim[openai,anthropic,google]", "httpx"]
+include_paths = [".", "examples"]
 exclude = ["*.pyc", "__pycache__", "*.egg-info", "tests", "node_modules", "dist", "pack-output"]
 optimize = 1
 strategy = "standalone"                         # "standalone" | "pyoxidizer" | "embedded" | "portable" | "system"
@@ -151,29 +155,29 @@ start_position = "center"
 # Bundle Configuration
 # ============================================================================
 [bundle]
-icon = "../assets/icons/auroraview-256.png"
+icon = "assets/icons/auroraview-256.png"
 copyright = "Copyright 2025 AuroraView Team"
 category = "Developer Tools"
 short_description = "AuroraView Feature Gallery"
-resources = ["../examples"]
+resources = ["examples"]
 
 # Windows-specific
 [bundle.windows]
-icon = "../assets/icons/auroraview.ico"
+icon = "assets/icons/auroraview.ico"
 console = false
 
 # [bundle.macos]
-# icon = "../assets/icons/auroraview.icns"
+# icon = "assets/icons/auroraview.icns"
 
 # [bundle.linux]
-# icon = "../assets/icons/auroraview-256.png"
+# icon = "assets/icons/auroraview-256.png"
 # categories = ["Development", "Utility"]
 
 # ============================================================================
 # Build Configuration
 # ============================================================================
 [build]
-before = ["python ../scripts/ensure_gallery_dist.py"]
+before = ["python scripts/ensure_gallery_dist.py"]
 after = []
 resources = ["./public"]
 exclude = ["*.map", "*.ts", "node_modules"]
@@ -197,25 +201,25 @@ after_pack = []
 
 
 [[hooks.collect]]
-source = "../examples/*.py"
+source = "examples/*.py"
 dest = "resources/examples"
 preserve_structure = false
 description = "Python example files for the gallery"
 
 [[hooks.collect]]
-source = "../examples/*.html"
+source = "examples/*.html"
 dest = "resources/examples"
 preserve_structure = false
 description = "HTML example files"
 
 [[hooks.collect]]
-source = "../examples/agent_browser"
+source = "examples/agent_browser"
 dest = "resources/examples/agent_browser"
 preserve_structure = true
 description = "Agent browser resources (HTML templates, bookmarks, etc.)"
 
 [[hooks.collect]]
-source = "../examples/*.toml"
+source = "examples/*.toml"
 dest = "resources/examples"
 preserve_structure = false
 description = "TOML configuration files"

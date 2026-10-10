@@ -50,8 +50,10 @@ from backend.telemetry_api import register_telemetry_apis
 from backend.webview_extension_api import register_webview_extension_apis
 
 sys.path.insert(0, str(PROJECT_ROOT))
-sys.path.insert(0, str(PROJECT_ROOT / "python"))
 
+# `auroraview` is a PyPI dependency (see requirements.txt). Gallery used to reach
+# the in-tree bindings at <monorepo>/python; that path does not exist now that
+# Gallery lives in its own repository.
 from auroraview import PluginManager, WebView
 
 # Set restart command for shell plugin

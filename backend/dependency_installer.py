@@ -35,10 +35,12 @@ if TYPE_CHECKING:
 # Try to import importlib.metadata for package version checking
 try:
     from importlib.metadata import version as get_version
+
     HAS_IMPORTLIB_METADATA = True
 except ImportError:
     try:
         from importlib_metadata import version as get_version  # noqa: F401
+
         HAS_IMPORTLIB_METADATA = True
     except ImportError:
         HAS_IMPORTLIB_METADATA = False
@@ -163,7 +165,7 @@ def _get_vx_command() -> Optional[str]:
         # Convert relative path to absolute if needed
         if not os.path.isabs(vx_path):
             # In packed mode, resolve relative to the executable directory
-            exe_dir = Path(sys.executable).parent if getattr(sys, 'frozen', False) else Path.cwd()
+            exe_dir = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path.cwd()
             vx_path = str(exe_dir / vx_path)
 
         if os.path.exists(vx_path):
@@ -185,7 +187,7 @@ def _get_cache_dir() -> Optional[Path]:
         return Path(cache_dir)
 
     # In packed mode, use a cache relative to executable
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, "frozen", False):
         exe_dir = Path(sys.executable).parent
         return exe_dir / ".cache" / "vx"
 
@@ -232,16 +234,20 @@ def install_requirements(
             "AURORAVIEW_VX_PATH": os.environ.get("AURORAVIEW_VX_PATH"),
             "AURORAVIEW_OFFLINE": os.environ.get("AURORAVIEW_OFFLINE"),
             "AURORAVIEW_CACHE_DIR": os.environ.get("AURORAVIEW_CACHE_DIR"),
-            "PATH": os.environ.get("PATH", "")[:200] + "..." if len(os.environ.get("PATH", "")) > 200 else os.environ.get("PATH", ""),
-        }
+            "PATH": os.environ.get("PATH", "")[:200] + "..."
+            if len(os.environ.get("PATH", "")) > 200
+            else os.environ.get("PATH", ""),
+        },
     }
 
     if on_progress:
-        on_progress({
-            "type": "output",
-            "package": "system",
-            "line": f"[DEBUG] Environment setup: {debug_info}",
-        })
+        on_progress(
+            {
+                "type": "output",
+                "package": "system",
+                "line": f"[DEBUG] Environment setup: {debug_info}",
+            }
+        )
 
     for i, req in enumerate(requirements):
         if cancel_event and cancel_event.is_set():
@@ -252,13 +258,15 @@ def install_requirements(
         start_time = time.strftime("%H:%M:%S")
 
         if on_progress:
-            on_progress({
-                "type": "start",
-                "package": package_name,
-                "index": i,
-                "total": len(requirements),
-                "message": f"[{start_time}] Installing {package_name}...",
-            })
+            on_progress(
+                {
+                    "type": "start",
+                    "package": package_name,
+                    "index": i,
+                    "total": len(requirements),
+                    "message": f"[{start_time}] Installing {package_name}...",
+                }
+            )
 
         try:
             # Run install with vx uv pip when available, otherwise pip
@@ -269,21 +277,25 @@ def install_requirements(
                 if _is_offline_mode():
                     cmd.extend(["--offline", "--no-index"])
                     if on_progress:
-                        on_progress({
-                            "type": "output",
-                            "package": package_name,
-                            "line": f"[{start_time}] Running in offline mode",
-                        })
+                        on_progress(
+                            {
+                                "type": "output",
+                                "package": package_name,
+                                "line": f"[{start_time}] Running in offline mode",
+                            }
+                        )
 
                 cache_dir = _get_cache_dir()
                 if cache_dir:
                     cmd.extend(["--cache-dir", str(cache_dir)])
                     if on_progress:
-                        on_progress({
-                            "type": "output",
-                            "package": package_name,
-                            "line": f"[{start_time}] Using cache directory: {cache_dir}",
-                        })
+                        on_progress(
+                            {
+                                "type": "output",
+                                "package": package_name,
+                                "line": f"[{start_time}] Using cache directory: {cache_dir}",
+                            }
+                        )
 
             else:
                 cmd = [python_exe, "-m", "pip", "install", req, "--verbose"]
@@ -296,32 +308,40 @@ def install_requirements(
             # Log the command being executed
             cmd_str = " ".join(cmd)
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Executing: {cmd_str}",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Executing: {cmd_str}",
+                    }
+                )
 
             # Log working directory and environment
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Working directory: {os.getcwd()}",
-                })
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Python version: {sys.version}",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Working directory: {os.getcwd()}",
+                    }
+                )
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Python version: {sys.version}",
+                    }
+                )
 
             # Create subprocess with enhanced error handling
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Creating subprocess...",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Creating subprocess...",
+                    }
+                )
 
             process = subprocess.Popen(
                 cmd,
@@ -332,23 +352,28 @@ def install_requirements(
             )
 
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Subprocess created with PID: {process.pid}",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Subprocess created with PID: {process.pid}",
+                    }
+                )
 
             output_lines = []
             # Use non-blocking read on Unix or poll on Windows
             import platform
+
             is_windows = platform.system() == "Windows"
 
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{start_time}] Platform: {platform.system()}, using {'polling' if is_windows else 'select'} for I/O",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{start_time}] Platform: {platform.system()}, using {'polling' if is_windows else 'select'} for I/O",
+                    }
+                )
 
             line_count = 0
             last_activity = time.time()
@@ -362,51 +387,63 @@ def install_requirements(
                     # Use kill() for immediate termination
                     try:
                         if on_progress:
-                            on_progress({
-                                "type": "output",
-                                "package": package_name,
-                                "line": f"[{time.strftime('%H:%M:%S')}] Terminating process {process.pid}...",
-                            })
+                            on_progress(
+                                {
+                                    "type": "output",
+                                    "package": package_name,
+                                    "line": f"[{time.strftime('%H:%M:%S')}] Terminating process {process.pid}...",
+                                }
+                            )
                         process.kill()
                         process.wait(timeout=1)  # Wait briefly for cleanup
                     except Exception as e:
                         if on_progress:
-                            on_progress({
-                                "type": "output",
-                                "package": package_name,
-                                "line": f"[{time.strftime('%H:%M:%S')}] Error terminating process: {e}",
-                            })
+                            on_progress(
+                                {
+                                    "type": "output",
+                                    "package": package_name,
+                                    "line": f"[{time.strftime('%H:%M:%S')}] Error terminating process: {e}",
+                                }
+                            )
                     cancelled = True
                     if on_progress:
-                        on_progress({
-                            "type": "output",
-                            "package": package_name,
-                            "line": f"[{time.strftime('%H:%M:%S')}] ⏹️ Cancelling...",
-                        })
+                        on_progress(
+                            {
+                                "type": "output",
+                                "package": package_name,
+                                "line": f"[{time.strftime('%H:%M:%S')}] ⏹️ Cancelling...",
+                            }
+                        )
                     break
 
                 # Check for timeout
                 if current_time - last_activity > timeout_seconds:
                     if on_progress:
-                        on_progress({
-                            "type": "output",
-                            "package": package_name,
-                            "line": f"[{time.strftime('%H:%M:%S')}] ⏰ Timeout after {timeout_seconds}s, terminating process...",
-                        })
+                        on_progress(
+                            {
+                                "type": "output",
+                                "package": package_name,
+                                "line": f"[{time.strftime('%H:%M:%S')}] ⏰ Timeout after {timeout_seconds}s, terminating process...",
+                            }
+                        )
                     try:
                         process.kill()
                         process.wait(timeout=1)
                     except Exception:
                         pass
                     failed.append(req)
-                    all_output.append(f"Timeout: Process took longer than {timeout_seconds} seconds")
+                    all_output.append(
+                        f"Timeout: Process took longer than {timeout_seconds} seconds"
+                    )
                     if on_progress:
-                        on_progress({
-                            "type": "error",
-                            "package": package_name,
-                            "success": False,
-                            "message": f"[{time.strftime('%H:%M:%S')}] Timeout installing {package_name}",
-                        })
+                        on_progress(
+                            {
+                                "type": "error",
+                                "package": package_name,
+                                "success": False,
+                                "message": f"[{time.strftime('%H:%M:%S')}] Timeout installing {package_name}",
+                            }
+                        )
                     break
 
                 # Non-blocking read with timeout
@@ -424,11 +461,13 @@ def install_requirements(
                                     all_output.append(line)
                                     last_activity = time.time()
                                     if on_progress:
-                                        on_progress({
-                                            "type": "output",
-                                            "package": package_name,
-                                            "line": f"[{time.strftime('%H:%M:%S')}] {line}",
-                                        })
+                                        on_progress(
+                                            {
+                                                "type": "output",
+                                                "package": package_name,
+                                                "line": f"[{time.strftime('%H:%M:%S')}] {line}",
+                                            }
+                                        )
                         break
 
                     # Try to read with short timeout simulation
@@ -444,22 +483,26 @@ def install_requirements(
                         # No data ready, check if process finished
                         if process.poll() is not None:
                             if on_progress:
-                                on_progress({
-                                    "type": "output",
-                                    "package": package_name,
-                                    "line": f"[{time.strftime('%H:%M:%S')}] Process finished, no more data",
-                                })
+                                on_progress(
+                                    {
+                                        "type": "output",
+                                        "package": package_name,
+                                        "line": f"[{time.strftime('%H:%M:%S')}] Process finished, no more data",
+                                    }
+                                )
                             break
                         continue
 
                     line = process.stdout.readline()
                     if not line:
                         if on_progress:
-                            on_progress({
-                                "type": "output",
-                                "package": package_name,
-                                "line": f"[{time.strftime('%H:%M:%S')}] End of stream reached",
-                            })
+                            on_progress(
+                                {
+                                    "type": "output",
+                                    "package": package_name,
+                                    "line": f"[{time.strftime('%H:%M:%S')}] End of stream reached",
+                                }
+                            )
                         break
 
                 line = line.rstrip()
@@ -473,79 +516,96 @@ def install_requirements(
 
                 if on_progress:
                     # Filter out some noisy pip lines if needed, but here we want detail
-                    on_progress({
-                        "type": "output",
-                        "package": package_name,
-                        "line": f"[{time.strftime('%H:%M:%S')}] {line}",
-                    })
+                    on_progress(
+                        {
+                            "type": "output",
+                            "package": package_name,
+                            "line": f"[{time.strftime('%H:%M:%S')}] {line}",
+                        }
+                    )
 
                 # Log progress every 50 lines to avoid spam
                 if line_count % 50 == 0 and on_progress:
-                    on_progress({
-                        "type": "output",
-                        "package": package_name,
-                        "line": f"[{time.strftime('%H:%M:%S')}] [DEBUG] Processed {line_count} lines so far...",
-                    })
+                    on_progress(
+                        {
+                            "type": "output",
+                            "package": package_name,
+                            "line": f"[{time.strftime('%H:%M:%S')}] [DEBUG] Processed {line_count} lines so far...",
+                        }
+                    )
 
             if cancelled:
                 break
 
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{time.strftime('%H:%M:%S')}] Waiting for process to complete...",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{time.strftime('%H:%M:%S')}] Waiting for process to complete...",
+                    }
+                )
 
             process.wait()
 
             if on_progress:
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{time.strftime('%H:%M:%S')}] Process completed with return code: {process.returncode}",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{time.strftime('%H:%M:%S')}] Process completed with return code: {process.returncode}",
+                    }
+                )
 
             end_time = time.strftime("%H:%M:%S")
             if process.returncode == 0:
                 installed.append(req)
                 if on_progress:
-                    on_progress({
-                        "type": "complete",
-                        "package": package_name,
-                        "success": True,
-                        "message": f"[{end_time}] Successfully installed {package_name} ({line_count} lines processed)",
-                    })
+                    on_progress(
+                        {
+                            "type": "complete",
+                            "package": package_name,
+                            "success": True,
+                            "message": f"[{end_time}] Successfully installed {package_name} ({line_count} lines processed)",
+                        }
+                    )
             else:
                 failed.append(req)
                 if on_progress:
-                    on_progress({
-                        "type": "error",
-                        "package": package_name,
-                        "success": False,
-                        "message": f"[{end_time}] Failed to install {package_name} (exit {process.returncode}, {line_count} lines processed)",
-                        "output": "\n".join(output_lines[-20:]),  # Last 20 lines for context
-                    })
+                    on_progress(
+                        {
+                            "type": "error",
+                            "package": package_name,
+                            "success": False,
+                            "message": f"[{end_time}] Failed to install {package_name} (exit {process.returncode}, {line_count} lines processed)",
+                            "output": "\n".join(output_lines[-20:]),  # Last 20 lines for context
+                        }
+                    )
 
         except Exception as e:
             failed.append(req)
             error_msg = str(e)
             all_output.append(f"Error: {error_msg}")
             if on_progress:
-                on_progress({
-                    "type": "error",
-                    "package": package_name,
-                    "success": False,
-                    "message": f"[{time.strftime('%H:%M:%S')}] Exception installing {package_name}: {error_msg}",
-                })
+                on_progress(
+                    {
+                        "type": "error",
+                        "package": package_name,
+                        "success": False,
+                        "message": f"[{time.strftime('%H:%M:%S')}] Exception installing {package_name}: {error_msg}",
+                    }
+                )
                 # Add stack trace for debugging
                 import traceback
+
                 stack_trace = traceback.format_exc()
-                on_progress({
-                    "type": "output",
-                    "package": package_name,
-                    "line": f"[{time.strftime('%H:%M:%S')}] Stack trace: {stack_trace}",
-                })
+                on_progress(
+                    {
+                        "type": "output",
+                        "package": package_name,
+                        "line": f"[{time.strftime('%H:%M:%S')}] Stack trace: {stack_trace}",
+                    }
+                )
 
     return {
         "success": not cancelled and len(failed) == 0,
@@ -580,6 +640,7 @@ class DependencyInstaller:
         try:
             source = sample_path.read_text(encoding="utf-8")
             import ast
+
             tree = ast.parse(source)
             docstring = ast.get_docstring(tree) or ""
         except Exception:
@@ -619,4 +680,3 @@ class DependencyInstaller:
             return result
         finally:
             self._installing = False
-
