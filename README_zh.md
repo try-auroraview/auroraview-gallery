@@ -75,6 +75,16 @@ python scripts/sync_examples.py /path/to/auroraview
 在 `auroraview-cli` 发布之前，分发包仍需从框架仓库构建。进展见
 [issue 跟踪](https://github.com/try-auroraview/auroraview-gallery/issues)。
 
+## 已知债务
+
+Gallery 在框架 monorepo 中从未被 CI 执行过 lint，拆仓时随之带来了 16 个既有的 lint 错误。
+
+其中 4 个"未使用变量"实际是有意为之 —— 这些标识符带下划线前缀，是为保持签名对称而保留的，
+因此 `eslint.config.js` 现已认可该约定。其余 12 个（`any` 类型、一处 `react-refresh`
+导出、两处 `react-hooks/set-state-in-effect`）已降级为警告，保持可见但不阻塞 CI。
+
+这些问题是真实存在且应当偿还的，但都不是本次拆仓引入的。执行 `npm run lint` 可查看当前清单。
+
 ## 开发
 
 ```bash

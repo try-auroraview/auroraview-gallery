@@ -82,6 +82,20 @@ Until `auroraview-cli` is published, build the distributable from the framework
 repo. See [issue tracking](https://github.com/try-auroraview/auroraview-gallery/issues)
 for progress.
 
+## Known debt
+
+Gallery was never linted in CI while it lived in the framework monorepo, and the
+extraction carried 16 pre-existing lint errors with it.
+
+Four were unused-variable errors that were intentional — the bindings are
+underscore-prefixed and kept for signature symmetry — so `eslint.config.js` now
+honours that convention. The remaining twelve (`any` types, a `react-refresh`
+export, and two `react-hooks/set-state-in-effect` findings) are downgraded to
+warnings so they stay visible without blocking CI.
+
+They are real and should be paid down; none was introduced by the extraction.
+Run `npm run lint` to see the current list.
+
 ## Development
 
 ```bash
