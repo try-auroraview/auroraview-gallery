@@ -39,10 +39,13 @@ python main.py
 
 ## 平台支持
 
-Python 宿主**仅支持 Windows 与 macOS**。AuroraView 只向 PyPI 发布了 `win_amd64`
-和 `macosx` wheel，从未提供 manylinux 构建，因此在 Linux 上
-`pip install -r requirements.txt` 无可用版本。前端可在任意平台构建；
-CI 在 Linux 上构建前端，Python 宿主作业跑在 Windows 上。
+Python 宿主**目前只能装在 Windows 与 macOS 上**。Linux wheel 从 AuroraView 0.5.13
+起已经有了，但 PyPI 仍停留在 0.5.11，该版本只有 `win_amd64` 与 `macosx` wheel、
+没有 Linux 构建，因此当下在 Linux 上 `pip install -r requirements.txt` 无可用版本。
+这是**发布滞后，而非平台限制** —— 0.5.13 及以上进入 PyPI 后 Linux 即可用。
+
+前端可在任意平台构建。CI 在 Linux 上构建前端，Python 宿主作业跑在 Windows 上，
+以便验证当前 PyPI 版本真正支持的平台。
 
 ## 与框架的关系
 
@@ -76,11 +79,14 @@ python scripts/sync_examples.py /path/to/auroraview
 ## 已知缺口：打包
 
 `auroraview.pack.toml` 已从框架仓库随迁，但 Gallery 目前还不能自行打包。
-`pack` 命令位于 Rust 编写的 `auroraview-cli` 中，它需要从 `try-auroraview/auroraview`
-构建，且未发布到 PyPI 或 npm。PyPI 上的 `auroraview` 命令只是一个 WebView 启动器。
+`pack` 命令位于 Rust 编写的 `auroraview-cli` 中 —— 该二进制其实已经在每次
+[AuroraView release](https://github.com/try-auroraview/auroraview/releases) 中
+随 Windows、Linux、macOS 三个平台发布，但它**还没有安装入口**（既无包管理器渠道，
+也没有 `vx` recipe），所以 Gallery 目前没有受支持的方式拿到它。
+PyPI 上的 `auroraview` 命令只是一个 WebView 启动器，没有 `pack` 子命令。
 
-在 `auroraview-cli` 发布之前，分发包仍需从框架仓库构建。进展见
-[issue 跟踪](https://github.com/try-auroraview/auroraview-gallery/issues)。
+缺的是「安装器」，不是二进制本身。见
+[issue #2](https://github.com/try-auroraview/auroraview-gallery/issues/2)。
 
 ## 已知债务
 

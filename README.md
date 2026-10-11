@@ -42,11 +42,14 @@ server independently.
 
 ## Platform support
 
-The Python host runs on **Windows and macOS only**. AuroraView publishes
-`win_amd64` and `macosx` wheels to PyPI and has never shipped a manylinux build,
-so `pip install -r requirements.txt` has nothing to resolve on Linux. The
-frontend builds anywhere; CI builds it on Linux and runs the Python host job on
-Windows.
+The Python host currently installs on **Windows and macOS only**. Linux wheels
+exist from AuroraView 0.5.13 onwards, but PyPI is still serving 0.5.11, which
+has `win_amd64` and `macosx` wheels and no Linux build — so
+`pip install -r requirements.txt` has nothing to resolve on Linux today. This is
+a publication lag, not a platform limit: once 0.5.13+ reaches PyPI, Linux works.
+
+The frontend builds anywhere. CI builds it on Linux and runs the Python host job
+on Windows so it exercises a platform the current PyPI release actually supports.
 
 ## Relationship to the framework
 
@@ -82,13 +85,16 @@ The script reports what changed and records the upstream commit it synced from.
 ## Known gap: packing
 
 `auroraview.pack.toml` is carried over from the framework repo, but Gallery
-cannot pack itself yet. The `pack` command lives in the Rust `auroraview-cli`
-binary, which is built from `try-auroraview/auroraview` and is not published to
-PyPI or npm. The PyPI `auroraview` command is only a WebView launcher.
+cannot pack itself yet. The `pack` command lives in the Rust `auroraview-cli`,
+which is published as a downloadable binary on every
+[AuroraView release](https://github.com/try-auroraview/auroraview/releases) for
+Windows, Linux and macOS — but it has no install path yet (no package-manager
+channel and no `vx` recipe), so Gallery has no supported way to obtain it. The
+`auroraview` command on PyPI is only a WebView launcher and has no `pack`
+subcommand.
 
-Until `auroraview-cli` is published, build the distributable from the framework
-repo. See [issue tracking](https://github.com/try-auroraview/auroraview-gallery/issues)
-for progress.
+What is missing is an installer, not the binary. See
+[issue #2](https://github.com/try-auroraview/auroraview-gallery/issues/2).
 
 ## Known debt
 
